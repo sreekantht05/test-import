@@ -7,5 +7,5 @@
 3. Run script along with project name as parameter \
    sh github-create.sh {project name} \
    ex. sh github-create.sh aws-tf-proj-vmdec 
-4. Your repo should be create and is pushed to dev branch
+4. Your repo should be created and is pushed to dev branch
    
