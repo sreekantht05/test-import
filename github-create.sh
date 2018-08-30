@@ -32,7 +32,7 @@ fi
 mkdir $repo_name
 cd $repo_name
 echo -n "Creating Github repository '$repo_name' ..."
-curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' > /dev/null 2>&1
+curl -u "$username:$token" https://api.github.com/orgs/sfdcit/repos -d '{"name":"'$repo_name'"}' > /dev/null 2>&1
 echo " done."
 
 echo -n "Setting up your new repo..."
@@ -61,7 +61,7 @@ git commit -m "first commit"
 git branch -m dev
 
 echo -n "Pushing local code to remote ..."
-git remote add origin https://github.com/$username/$repo_name.git > /dev/null 2>&1
+git remote add origin https://github.com/sfdcit/$repo_name.git > /dev/null 2>&1
 git push -u origin dev > /dev/null 2>&1
 echo " done."
 
