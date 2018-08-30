@@ -1,4 +1,4 @@
-# Use this template to create your repos in CLI
+# Use this template to create your repos in sfdcit org using CLI
 
 1. Clone \
    git clone https://github.com/sfdcit/aws-tf-proj-template.git
