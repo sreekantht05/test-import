@@ -9,21 +9,18 @@ LAMBDA_FUNCTION_NAME = 'aws-tf-proj-template'
 
 def get_user_input():
     inputs = {}
-    # inputs['repo_name'] = input('Enter the name of the repo, i.e. aws-tf-prof-myproject:\n')
-    # inputs['environments'] = input('Enter a list of space separated environment branches the repo should have. i.e. sbx dev uat qa prod:\n')
-    # inputs['code_owners'] = input('Enter a list of space separated github usernames to mark as a code owner:\n')
+    inputs['repo_name'] = input('Enter the name of the repo, i.e. aws-tf-prof-myproject:\n')
+    inputs['environments'] = input('Enter a list of space separated environment branches the repo should have. i.e. sbx dev uat qa prod:\n')
+    inputs['code_owners'] = input('Enter a list of space separated github usernames to mark as a code owner:\n')
 
-    inputs['repo_name'] = 'andy_test_repo2'
-    inputs['environments'] = 'sbx dev'
-    inputs['code_owners'] = 'sfdc-afraley'
+    #inputs['repo_name'] = 'shub_test_repo2'
+    #inputs['environments'] = 'sbx ssprod'
+    #inputs['code_owners'] = 'shubhashishraiSalesforce'
 
     inputs['environments'] = inputs['environments'].split(' ')
     inputs['code_owners'] = inputs['code_owners'].split(' ')
 
     return inputs
-
-
-
 
 def trigger_lambda(inputs):
 
@@ -48,8 +45,18 @@ def trigger_lambda(inputs):
 def main():
     """ Main """
     inputs = get_user_input()
+    print (inputs)
 
-    # print(json.dumps(inputs))
+    isDEVSSDEVBothAbsent = True
+    for env in inputs['environments']:
+        if env.upper() == 'DEV' or env.upper() == 'SSDEV':
+            isDEVSSDEVBothAbsent = False 
+            break
+
+    if isDEVSSDEVBothAbsent:
+        print ("Ensure at least DEV or SSDEV is included in the list of environments")
+        return
+
     trigger_lambda(inputs)
 
 
