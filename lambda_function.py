@@ -11,7 +11,8 @@ def lambda_handler(event, context):
     users = event["code_owners"]      #["shubhashishraiSalesforce"]
     ownerFileContent = ''
     index = 0
-
+    boolMakeSSDEVDefault = True
+    
     for user in users:
         index = index + 1
         if index != len(users):
@@ -42,7 +43,7 @@ def lambda_handler(event, context):
 
     #scaffolding - to create the directory and file structure - https://developer.github.com/v3/repos/contents/#create-a-file    
     f1.createNewFile(repo_name, ownerFileContent.encode('utf-8'), "master", ".owners")
-    f1.createNewFile(repo_name, "#Placeholder".encode('utf-8'), "master", ".gitignore")
+    #f1.createNewFile(repo_name, "#Placeholder".encode('utf-8'), "master", ".gitignore")
     f1.createNewFile(repo_name, "#Placeholder".encode('utf-8'), "master", "modules/main/main.tf")
     
     for account in accounts:
@@ -54,13 +55,28 @@ def lambda_handler(event, context):
     
     shaMaster = response["object"]["sha"]
     print(shaMaster)
-
-    for account in accounts:
-        f1.createBranch(repo_name, account, shaMaster)  
     
+    for account in accounts:
+        f1.createBranch(repo_name, account, shaMaster)
+        if (account.upper() == 'DEV'):
+            boolMakeSSDEVDefault = False    
     f1.deleteMasterBranch(repo_name)    
 
+    if boolMakeSSDEVDefault:
+        f1.defaultBranch(repo_name,'ssdev')
+    else:
+        f1.defaultBranch(repo_name,'dev')
+        
+    for account in accounts:
+        f1.setProtection(repo_name)
+        
+    for account in accounts:
+        r = f1.setProtection(repo_name, account)
+        print(r.status_code)
+        print(r.json())
+
     #To Dos:
-    #Default branch?
     #branch protection - https://developer.github.com/v3/repos/branches/#update-branch-protection
     #lambda job to run periodically/daily to ensure the branch protection rules are intact. - https://developer.github.com/v3/repos/branches/#update-branch-protection
+    
+    return "Repository created successfully!"
