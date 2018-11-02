@@ -16,9 +16,7 @@ def createRepo(repo_name):
     data["private"] = "false"
     data["gitignore_template"] = "nanoc"
     data = json.dumps(data)
-    print(headers)
     r = requests.post(url, data=data, headers=headers)
-    print(r)
     return r
 
 def checkUserExists(user):
@@ -75,8 +73,7 @@ def createBranch(repo_name, branch_name, sha):
     data["ref"] = "refs/heads/" + branch_name
     data["sha"] = sha
     data = json.dumps(data)
-    r = requests.post(url, data=data, headers=headers)
-    print(r)
+    r = requests.post(url, data=data, headers=headers) 
     return r
 
 def deleteMasterBranch(repo_name):
@@ -85,6 +82,62 @@ def deleteMasterBranch(repo_name):
     headers = {}
     headers["Content-Type"]="application/json"
     headers["Authorization"] = "token "+token
-    r = requests.delete(url, headers=headers)
-    print(r)
+    r = requests.delete(url, headers=headers)  
     return r  
+
+def defaultBranch(repo_name, branch_name):
+    token = os.environ['token']
+    url = "https://api.github.com/repos/sfdcit/" + repo_name
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    data = {}
+    data["name"] = repo_name
+    data["default_branch"] = branch_name
+    data = json.dumps(data)
+    r = requests.patch(url, data=data, headers=headers)
+    return r  
+    
+def setProtection(repo_name):
+    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/branches/" + account + "/protection"
+    token = os.environ['token']
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    data = {
+            
+        'required_status_check': {
+            'strict': True,
+            'context': [],
+            },
+        'enforce_admins': False,
+        'required_pull_request_reviews': {
+            'dismiss_stale_reviews': True,
+            'require_code_owner_reviews': True,
+            },
+        'restrictions': [],
+        }
+    data = json.dumps(data)
+    r = requests.put(url, data=data, headers=headers)
+    return r
+    
+def setProtection(repo_name,branch_name):
+    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/branches/" + branch_name + "/protection"
+    token = os.environ['token']
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    data = {
+        "restrictions": None,
+        "required_status_checks": {
+            "strict": True,
+            "contexts": []
+        },
+        "enforce_admins": False,
+        "required_pull_request_reviews": {
+            "dismiss_stale_reviews": True,
+            "require_code_owner_reviews": True
+        }
+    }
+    r = requests.put(url, json=data, headers=headers)
+    return r
