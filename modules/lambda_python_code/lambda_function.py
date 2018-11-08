@@ -19,15 +19,15 @@ def lambda_handler(event, context):
     for user in users:
         index = index + 1
         if index != len(users):
-            ownerFileContent = ownerFileContent + user + ','
+            ownerFileContent = ownerFileContent + '* ' + '@' + user + ' '
         else:
-            ownerFileContent = ownerFileContent + user
+            ownerFileContent = ownerFileContent + '@' + user
         r = f1.checkUserExists(user,token)
         
-        if r.status_code == 200:
-            print("User exists")
+        if r.status_code == 204:
+            print(user + " is a member of the organization")
         else:
-            return "User Not exists"
+            return user + " is not a member of the organization. Please enter a valid username."
     
     print("Creating a repository")
     
@@ -40,12 +40,12 @@ def lambda_handler(event, context):
         print("Repository created")
         #return "Repository Created"
     elif r.status_code == 422 and response["errors"][0]["message"] == "name already exists on this account":
-        return "name already exists on this account"
+        return "Repository name is already in use. Please enter another name."
     else:
         return "Error occured in the creation of the repo" + r.text
 
     #scaffolding - to create the directory and file structure - https://developer.github.com/v3/repos/contents/#create-a-file    
-    f1.createNewFile(repo_name,token, ownerFileContent.encode('utf-8'), "master", ".owners")
+    f1.createNewFile(repo_name,token, ownerFileContent.encode('utf-8'), "master", "CODEOWNERS")
     #f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", ".gitignore")
     f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", "modules/main/main.tf")
     

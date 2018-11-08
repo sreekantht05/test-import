@@ -20,7 +20,7 @@ def createRepo(repo_name,token):
     return r
 
 def checkUserExists(user,token):
-    url = "https://api.github.com/users/"+user
+    url = "https://api.github.com/orgs/sfdcit/members/"+user
     headers = {}
     #token = os.environ['token']
     headers["Content-Type"]="application/json"
