@@ -4,8 +4,7 @@ import os
 import base64
 
 def createRepo(repo_name,token):
-    print("Post call for creating a repo")
-    #token = os.environ['token']
+    print("Post call for creating a repository")
     url = "https://api.github.com/orgs/sfdcit/repos"
     headers = {}
     headers["Content-Type"]="application/json"
@@ -19,19 +18,8 @@ def createRepo(repo_name,token):
     r = requests.post(url, data=data, headers=headers)
     return r
 
-def checkUserExists(user,token):
-    url = "https://api.github.com/users/"+user
-    headers = {}
-    #token = os.environ['token']
-    headers["Content-Type"]="application/json"
-    print(token)
-    headers["Authorization"] = "token "+token
-    r = requests.get(url,headers=headers)
-    return r
-
-def checkRepoExists(repo_name,token):
-    url = "https://api.github.com/orgs/sfdcit/repos/"+repo_name
-    #token = os.environ['token']
+def checkMembershipInOrganisation(user,token):
+    url = "https://api.github.com/orgs/sfdcit/members/"+user
     headers = {}
     headers["Content-Type"]="application/json"
     headers["Authorization"] = "token "+token
@@ -98,8 +86,7 @@ def defaultBranch(repo_name, token, branch_name):
     data = json.dumps(data)
     r = requests.patch(url, data=data, headers=headers)
     return r  
-    
-    
+
 def setProtection(repo_name,token,branch_name):
     url = "https://api.github.com/repos/sfdcit/" + repo_name + "/branches/" + branch_name + "/protection"
     #token = os.environ['token']
@@ -119,4 +106,13 @@ def setProtection(repo_name,token,branch_name):
         }
     }
     r = requests.put(url, json=data, headers=headers)
+    return r
+
+def checkRepoExists(repo_name,token):
+    url = "https://api.github.com/orgs/sfdcit/repos/"+repo_name
+    #token = os.environ['token']
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url,headers=headers)
     return r
