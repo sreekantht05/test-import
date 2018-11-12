@@ -28,10 +28,7 @@ def get_secret():
         print("Encrypted secret retrieved")
         if 'SecretString' in get_secret_value_response:
             secret = get_secret_value_response['SecretString']
-            
-            print("Decrypting the Secret key")
-            secret = json.loads(secret)
-            plaintext = secret['token']
+            plaintext = secret
         else:
             binary_secret_data = get_secret_value_response['SecretBinary']
     except ClientError as e:
