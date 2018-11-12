@@ -36,13 +36,6 @@ module "gitrepo-cwlambda-role" {
   resources_list = ["*"]
 }
 
-module "project-key" {
-  source          = "git@github.com:sfdcit/aws-tf-lib.git//modules/security/kms"
-  regional_prefix = "${module.name-prefix.regional_prefix}"
-  tagmap          = "${module.tags.tagmap}"
-  services        = ["lambda.amazonaws.com"]
-}
-
 data "aws_vpc" "foundation_vpc" {
   count = "${var.asset_lambda_create}"
 
