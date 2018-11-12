@@ -27,9 +27,8 @@ def checkMembershipInOrganisation(user,token):
     return r
 
 def createNewFile(repo_name, token, content, branch, file_path):
-    print("Put calls for creating new file  s")
-    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/contents/" + file_path #test6.txt
-    #token = os.environ['token']
+    print("Put calls for creating new file - ",file_path)
+    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/contents/" + file_path
     headers = {}
     headers["Content-Type"]="application/json"
     headers["Authorization"] = "token "+token
@@ -45,7 +44,6 @@ def getMasterSHA(repo_name,token):
     url = "https://api.github.com/repos/sfdcit/" + repo_name + "/git/refs/heads/master"
     print (url)
     headers = {}
-    #token = os.environ['token']
     headers["Content-Type"]="application/json"
     headers["Authorization"] = "token "+token
     r = requests.get(url,headers=headers)
@@ -53,7 +51,6 @@ def getMasterSHA(repo_name,token):
 
 def createBranch(repo_name, token, branch_name, sha):
     print("Post call for creating a branch")
-    #token = os.environ['token']
     url = "https://api.github.com/repos/sfdcit/" + repo_name + "/git/refs"
     headers = {}
     headers["Content-Type"]="application/json"
@@ -66,7 +63,6 @@ def createBranch(repo_name, token, branch_name, sha):
     return r
 
 def deleteMasterBranch(repo_name,token):
-    #token = os.environ['token']
     url = "https://api.github.com/repos/sfdcit/" + repo_name + "/git/refs/heads/master"
     headers = {}
     headers["Content-Type"]="application/json"
@@ -75,7 +71,6 @@ def deleteMasterBranch(repo_name,token):
     return r  
 
 def defaultBranch(repo_name, token, branch_name):
-    #token = os.environ['token']
     url = "https://api.github.com/repos/sfdcit/" + repo_name
     headers = {}
     headers["Content-Type"]="application/json"
@@ -89,7 +84,6 @@ def defaultBranch(repo_name, token, branch_name):
 
 def setProtection(repo_name,token,branch_name):
     url = "https://api.github.com/repos/sfdcit/" + repo_name + "/branches/" + branch_name + "/protection"
-    #token = os.environ['token']
     headers = {}
     headers["Content-Type"]="application/json"
     headers["Authorization"] = "token "+token
@@ -110,7 +104,6 @@ def setProtection(repo_name,token,branch_name):
 
 def checkRepoExists(repo_name,token):
     url = "https://api.github.com/orgs/sfdcit/repos/"+repo_name
-    #token = os.environ['token']
     headers = {}
     headers["Content-Type"]="application/json"
     headers["Authorization"] = "token "+token
