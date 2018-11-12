@@ -23,12 +23,19 @@ def lambda_handler(event, context):
                 ownerFileContent = ownerFileContent + '@'+ user + ' '
             else:
                 ownerFileContent = ownerFileContent + '@'+ user
-            r = f1.checkMembershipInOrganisation(user,token)
             
-            if r.status_code == 204:
-                print(user , "is a member of sfdcit organisation")
-            else:
-                return "User membership not found"
+            if user.find("sfdcit") < 0:
+                r = f1.checkMembershipInOrganisation(user,token)
+                if r.status_code == 204:
+                    print(user , "is a member of sfdcit organisation")
+                else:
+                    return "User membership not found"
+            elif "sfdcit" in user:
+                isTeamExists = f1.checkTeamExists("consultants",token)
+                if isTeamExists:
+                    print(user, " team exists in the organisation")
+                else:
+                    return "Team not found"
         
         r = f1.createRepo(repo_name,token)
         response = json.loads(r.text)

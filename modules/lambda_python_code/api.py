@@ -109,3 +109,18 @@ def checkRepoExists(repo_name,token):
     headers["Authorization"] = "token "+token
     r = requests.get(url,headers=headers)
     return r
+
+def checkTeamExists(team_name,token):
+    url = "https://api.github.com/orgs/sfdcit/teams"
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url,headers=headers)
+    teams = json.loads(r.text)
+    isTeamExists = False
+    for team in teams:
+        if team_name == team["name"]:
+            isTeamExists = True
+            break
+    return isTeamExists
+    
