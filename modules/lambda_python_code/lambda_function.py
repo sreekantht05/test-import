@@ -31,7 +31,7 @@ def lambda_handler(event, context):
                 else:
                     return "User membership not found"
             elif "sfdcit" in user:
-                isTeamExists = f1.checkTeamExists("consultants",token)
+                isTeamExists = f1.checkTeamExists(user,token)
                 if isTeamExists:
                     print(user, " team exists in the organisation")
                 else:
