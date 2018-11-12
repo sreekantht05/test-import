@@ -36,13 +36,6 @@ module "gitrepo-cwlambda-role" {
   resources_list = ["*"]
 }
 
-module "project-key" {
-  source          = "git@github.com:sfdcit/aws-tf-lib.git//modules/security/kms"
-  regional_prefix = "${module.name-prefix.regional_prefix}"
-  tagmap          = "${module.tags.tagmap}"
-  services        = ["lambda.amazonaws.com"]
-}
-
 data "aws_vpc" "foundation_vpc" {
   count = "${var.asset_lambda_create}"
 
@@ -101,24 +94,11 @@ module "lambda" {
   role               = "${module.gitrepo-cwlambda-role.role_arn}"
   subnet_ids         = "${data.aws_subnet.private_subnets.*.id}"
   security_group_ids = ["${data.aws_security_group.admin_sgs.*.id}", "${data.aws_security_group.http_sgs.*.id}"]
-  secret_name        = "${module.sm.secret_name}"
+  secret_name        = "aws-tf-proj-plan_alert-github_token"
 }
 
 module "cloudwatch" {
   source          = "../../modules/cloudwatch"
   regional_prefix = "${module.name-prefix.regional_prefix}"
   target_arn      = "${module.lambda.arn}"
-}
-
-module "sm" {
-  source          = "../../modules/sm"
-  envcode         = "${module.envcode.envcode}"
-  tagmap          = "${module.tags.tagmap}"
-  regional_prefix = "${module.name-prefix.regional_prefix}"
-  service_target  = "github"
-  key_arn         = "${module.project-key.key_alias_arn}"
-
-  secret {
-    token = "dummy_replace_encrypted_value"
-  }
 }
