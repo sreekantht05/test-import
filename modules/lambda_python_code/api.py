@@ -101,11 +101,3 @@ def setProtection(repo_name,token,branch_name):
     }
     r = requests.put(url, json=data, headers=headers)
     return r
-
-def checkRepoExists(repo_name,token):
-    url = "https://api.github.com/orgs/sfdcit/repos/"+repo_name
-    headers = {}
-    headers["Content-Type"]="application/json"
-    headers["Authorization"] = "token "+token
-    r = requests.get(url,headers=headers)
-    return r
