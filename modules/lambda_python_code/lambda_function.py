@@ -14,6 +14,7 @@ def lambda_handler(event, context):
         accounts = event["environments"]
         users = event["code_owners"]
         ownerFileContent = '* '
+        gitignoreFileContent = ''
         index = 0
         boolMakeSSDEVDefault = True
         
@@ -49,6 +50,8 @@ def lambda_handler(event, context):
     
         #scaffolding - to create the directory and file structure - https://developer.github.com/v3/repos/contents/#create-a-file    
         f1.createNewFile(repo_name,token, ownerFileContent.encode('utf-8'), "master", "CODEOWNERS")
+        gitignoreFileContent = f1.getgitIgnoreFileContent()
+        f1.createNewFile(repo_name,token, gitignoreFileContent.encode('utf-8'), "master", ".gitignore")
         f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", "modules/main/main.tf")
         
         for account in accounts:

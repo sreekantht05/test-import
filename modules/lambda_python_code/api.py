@@ -13,7 +13,6 @@ def createRepo(repo_name,token):
     data["name"] = repo_name
     data["auto_init"] = "true"
     data["private"] = "false"
-    data["gitignore_template"] = "Terraform"
     data = json.dumps(data)
     r = requests.post(url, data=data, headers=headers)
     return r
@@ -123,4 +122,7 @@ def checkTeamExists(team_name,token):
             isTeamExists = True
             break
     return isTeamExists
-    
+
+def getgitIgnoreFileContent():
+    file_content = open("pythonTerraform.gitignore", 'r').read()
+    return file_content
