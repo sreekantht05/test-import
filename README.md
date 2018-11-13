@@ -1,10 +1,14 @@
-@Sree, @Shub, and @Sheryll to update based on the format example below, thanks!
-
+## Terraform GIT Repo Module
 
  REFERENCE
 https://github.com/sfdcit/aws-tf-lib/tree/v0.0.0/modules/environments/name-prefix
 ## What It Does
-We have a naming standard that includes prefixes to indicate the environment of an AWS resource. It is inefficient to have individual programmers hand type the prefixes. This module can create name prefixes for global resources, regional resources, or resources shared from another project. Lastly, this module can add a developer username to the prefix, so that developers can provision resources that has their name on it.  For global and regional prefix standards, see our [AWS Resources Naming Standards](https://docs.google.com/document/d/1jdgicHm7ZQYjLhbgPTt40EGmoumM2ds7JrZA_nZW0FU/edit).
+This Module creates AWS resources which creates a GIT Repository along with some branches, .gitignore file, CODEOWNERS file and folders with a predefined hierarchy.
+ - Master branch is removed, dev or ssdev is marked as default branch depending upon the requirement.
+ - All the branches that are specified are branch protected and able to merge via pull requests.
+ - Teams or owners that are specified  are added into the CODEOWNERS file.
+ - This module also creates a cloudwatch rule which runs daily to check branch protection for all the repositories in "sfdcit" organisation
+
 ## Module Limitations
 - The *global_prefix* output only includes the {Environment} and the {Technology} codes described in the naming standard.
 - The *regional_prefix* output only includes the {Environment}, {Region}, and {Technology} codes described in the naming standard.
@@ -51,16 +55,3 @@ module "name-prefix" {
 - **regcode:** A two-character code of the AWS Region where an AWS resource resides. Valid values are *or*, *va*, *oh*, *ie*, *dd*, *fr*, *sg*, *au*, and *in*. For an updated list, reference the [README for Envcode module](../envcode/README.md).
  --------
 
-
-
-# Use this template to create your repos in sfdcit org using CLI
-
-1. Clone \
-   git clone https://github.com/sfdcit/aws-tf-proj-template.git
-2. Make executable \
-   chmod 700 github-create.sh
-3. Run script along with project name as parameter \
-   sh github-create.sh {project name} \
-   ex. sh github-create.sh aws-tf-proj-vmdec 
-4. Your repo should be created and is pushed to dev branch
-   
