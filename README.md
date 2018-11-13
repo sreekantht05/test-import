@@ -1,7 +1,5 @@
 ## Terraform GIT Repo Module
 
- REFERENCE
-https://github.com/sfdcit/aws-tf-lib/tree/v0.0.0/modules/environments/name-prefix
 ## What It Does
 This Module creates AWS resources which creates a GIT Repository along with some branches, .gitignore file, CODEOWNERS file and folders with a predefined hierarchy.
  - Master branch is removed, dev or ssdev is marked as default branch depending upon the requirement.
