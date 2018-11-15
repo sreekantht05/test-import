@@ -126,3 +126,28 @@ def checkTeamExists(team_name,token):
 def getgitIgnoreFileContent():
     file_content = open("pythonTerraform.gitignore", 'r').read()
     return file_content
+
+def getAllRepos(token):
+    url = "https://api.github.com/orgs/sfdcit/repos?per_page=100"
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    return r
+
+def getAllBranches(repo_name,token):
+    url = "https://api.github.com/repos/sfdcit/"+repo_name+"/branches"
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    return r
+
+def checkBranchProtection(repo_name,branch_name,token):
+    url = "https://api.github.com/repos/sfdcit/"+repo_name+"/branches/"+branch_name
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    branch_details = json.loads(r.text)
+    return branch_details["protected"]

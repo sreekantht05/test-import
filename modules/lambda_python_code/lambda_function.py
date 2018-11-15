@@ -6,7 +6,9 @@ import retrieve_credentials as cred
 
 def lambda_handler(event, context):
     #{"repo_name": "my_repo_name", "environments": ["sbx", "dev", "uat", "qa"], "code_owners": ["afraley", "fcustodio"]}
-    
+    branch_list = ['dev','qa','uat','prod','ssdev','ssprod','dr','soxprod','soxdr','vdassbx','itsssbx','lenelbadge','resvsbx1']
+    #branch_list = os.environ['branch_list']
+    #branch_list = json.loads(branch_list)
     token = cred.get_secret()
     
     if "repo_name" in event and "environments" in event and "code_owners" in event:
@@ -88,6 +90,23 @@ def lambda_handler(event, context):
         return returnResponse
     else:
         print("event doesnt contains repo_name or environments or code_owners details...")
+        repos = f1.getAllRepos(token)
+        repos = json.loads(repos.text)
+        for repo in repos:
+            repo_name = repo["name"]
+            print("Repo Name - ",repo_name)
+            branches = f1.getAllBranches(repo_name,token)
+            branches = json.loads(branches.text)
+            for branch in branches:
+                branch_name = branch["name"]
+                print("    branch - ",branch_name)
+                if branch_name in branch_list:
+                    isbranchProtected = f1.checkBranchProtection(repo_name,branch_name,token)
+                    print("    branch protection status -",isbranchProtected)
+                    if not isbranchProtected:
+                        print("    Updating the Branch Protection...")
+                        f1.setProtection(repo_name,token, branch_name)
+        
         return "Invalid Parameters"
         #TODO: Ensure branch protection for existing repos
         #print("Ensuring branch protection for existing repositories...")
