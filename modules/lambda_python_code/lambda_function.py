@@ -10,6 +10,10 @@ def lambda_handler(event, context):
     #branch_list = os.environ['branch_list']
     #branch_list = json.loads(branch_list)
     token = cred.get_secret()
+    pageNumber = 1
+    numberOfRepos = 100
+    dictGroupIdGroupName = {}
+    listUserNames = []
     
     if "repo_name" in event and "environments" in event and "code_owners" in event:
         repo_name = event["repo_name"]
@@ -27,22 +31,31 @@ def lambda_handler(event, context):
             else:
                 ownerFileContent = ownerFileContent + '@'+ user
             
-            if user.find("sfdcit") < 0:
+            if user.find("sfdcit/") < 0:
                 r = f1.checkMembershipInOrganisation(user,token)
                 if r.status_code == 204:
                     print(user , "is a member of sfdcit organisation")
+                    listUserNames.append(user)
                 else:
                     return "User membership not found"
-            elif "sfdcit" in user:
-                isTeamExists = f1.checkTeamExists(user,token)
-                if isTeamExists:
+            elif "sfdcit/" in user:
+                teamId = f1.checkTeamExists(user,token)
+                if teamId != -1:
                     print(user, " team exists in the organisation")
+                    dictGroupIdGroupName[user] = teamId
                 else:
                     return "Team not found"
+            
+        #getting the team Id for the scrum team            
+        teamId = f1.checkTeamExists("scrum",token)
+        if teamId != -1:
+            dictGroupIdGroupName["scrum"] = teamId
+        
+        print (dictGroupIdGroupName)
+        print (listUserNames)
         
         r = f1.createRepo(repo_name,token)
         response = json.loads(r.text)
-        print(response)
         if r.status_code == 201:
             print("Repository created")
         elif r.status_code == 422 and response["errors"][0]["message"] == "name already exists on this account":
@@ -55,7 +68,18 @@ def lambda_handler(event, context):
         gitignoreFileContent = f1.getgitIgnoreFileContent()
         f1.createNewFile(repo_name,token, gitignoreFileContent.encode('utf-8'), "master", ".gitignore")
         f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", "modules/main/main.tf")
+        readmeFileContent = f1.getreadmeFileContent()
+        f1.createNewFile(repo_name,token, readmeFileContent.encode('utf-8'), "master", "README.md")
         
+        #making the code owners as collaborators
+        for username in listUserNames:
+            f1.addUserAsCollaborator(username, repo_name, token)
+            print (username + " added as collaborator")
+        #updating team repositories
+        for groupName in dictGroupIdGroupName:
+            f1.addRepoForGroup(str(dictGroupIdGroupName[groupName]), repo_name, token)
+            print (groupName + " added to the repository")
+            
         for account in accounts:
             f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", "envs/" + account + "/main.tf")  
         
@@ -90,23 +114,28 @@ def lambda_handler(event, context):
         return returnResponse
     else:
         print("event doesnt contains repo_name or environments or code_owners details...")
-        repos = f1.getAllRepos(token)
-        repos = json.loads(repos.text)
-        for repo in repos:
-            repo_name = repo["name"]
-            print("Repo Name - ",repo_name)
-            branches = f1.getAllBranches(repo_name,token)
-            branches = json.loads(branches.text)
-            for branch in branches:
-                branch_name = branch["name"]
-                print("    branch - ",branch_name)
-                if branch_name in branch_list:
-                    isbranchProtected = f1.checkBranchProtection(repo_name,branch_name,token)
-                    print("    branch protection status -",isbranchProtected)
-                    if not isbranchProtected:
-                        print("    Updating the Branch Protection...")
-                        f1.setProtection(repo_name,token, branch_name)
-        
-        return "Invalid Parameters"
+        while numberOfRepos == 100:
+            repos = f1.getAllRepos(token, str(pageNumber))
+            repos = json.loads(repos.text)
+            numberOfRepos = len(repos)
+            print ('@ ' + str(numberOfRepos))
+            pageNumber += 1
+
+            for repo in repos:
+                repo_name = repo["name"]
+                print("Repo Name - ",repo_name)
+                branches = f1.getAllBranches(repo_name,token)
+                branches = json.loads(branches.text)
+                for branch in branches:
+                    branch_name = branch["name"]
+                    print("    branch - ",branch_name)
+                    if branch_name in branch_list:
+                        isbranchProtected = f1.checkBranchProtection(repo_name,branch_name,token)
+                        print("    branch protection status -",isbranchProtected)
+                        if not isbranchProtected:
+                            print("    Updating the Branch Protection...")
+                            f1.setProtection(repo_name,token, branch_name)
+
+        return "Branch Protection Applied Successfully for the GitHub repos"
         #TODO: Ensure branch protection for existing repos
         #print("Ensuring branch protection for existing repositories...")
