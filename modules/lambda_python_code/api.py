@@ -11,9 +11,8 @@ def createRepo(repo_name,token):
     headers["Authorization"] = "token "+token
     data = {}
     data["name"] = repo_name
-    data["auto_init"] = "true"
-    data["private"] = "false"
-    data["gitignore_template"] = "Terraform"
+    #data["auto_init"] = "false" - commented to not default with a readme
+    data["private"] = "true"
     data = json.dumps(data)
     r = requests.post(url, data=data, headers=headers)
     return r
@@ -117,10 +116,56 @@ def checkTeamExists(team_name,token):
     headers["Authorization"] = "token "+token
     r = requests.get(url,headers=headers)
     teams = json.loads(r.text)
-    isTeamExists = False
+    teamId = -1
     for team in teams:
-        if team_name == team["name"]:
-            isTeamExists = True
+        if team_name.replace("sfdcit/","") == team["name"]:
+            teamId = team ["id"]
             break
-    return isTeamExists
+    return teamId
+
+def getgitIgnoreFileContent():
+    file_content = open("pythonTerraform.gitignore", 'r').read()
+    return file_content
+
+def getreadmeFileContent():
+    file_content = open("readme.template", 'r').read()
+    return file_content
+
+def getAllRepos(token, pageNumber):
+    url = "https://api.github.com/orgs/sfdcit/repos?per_page=100&page=" + pageNumber
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    return r
+
+def getAllBranches(repo_name,token):
+    url = "https://api.github.com/repos/sfdcit/"+repo_name+"/branches"
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    return r
+
+def checkBranchProtection(repo_name,branch_name,token):
+    url = "https://api.github.com/repos/sfdcit/"+repo_name+"/branches/"+branch_name
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    branch_details = json.loads(r.text)
+    return branch_details["protected"]
     
+def addUserAsCollaborator(username, repo_name, token):
+    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/collaborators/" + username
+    headers = {}
+    headers["Authorization"] = "token "+token
+    r = requests.put(url, headers=headers)
+    print("user as collaborator status code " + str(r.status_code))
+    
+def addRepoForGroup(groupId, repo_name, token):
+    url = "https://api.github.com/teams/" + groupId + "/repos/sfdcit/" + repo_name + "?permission=push"
+    headers = {}
+    headers["Authorization"] = "token "+token
+    r = requests.put(url, headers=headers)
+    print("group added status code " + str(r.status_code))
