@@ -4,9 +4,9 @@ module "envcode" {
 
 module "tags" {
   source          = "git@github.com:sfdcit/aws-tf-lib.git//modules/environments/tags"
-  created_by      = "aws-tf-proj-template repo"
-  technology      = "Git repo creation"
-  technology_code = "grepo"
+  technology      = "${var.technology}"
+  technology_code = "${var.technology_code}"
+  created_by      = "${var.created_by}"
 }
 
 module "name-prefix" {
@@ -21,11 +21,11 @@ module "gitrepo-cwlambda-role" {
   default_region = "${var.default_region}"
   global_prefix  = "${module.name-prefix.global_prefix}"
   service        = "lambda.amazonaws.com"
-  role_purpose   = "cwsqslambda"
+  role_purpose   = "cwlambda"
 
   # Inline policy variables
   inline_policy  = true
-  policy_purpose = "sqswrite"
+  policy_purpose = "smread"
   sid_list       = ["GetCloudWatchAlarms"]
   effect_list    = ["Allow"]
 
@@ -94,7 +94,7 @@ module "lambda" {
   role               = "${module.gitrepo-cwlambda-role.role_arn}"
   subnet_ids         = "${data.aws_subnet.private_subnets.*.id}"
   security_group_ids = ["${data.aws_security_group.admin_sgs.*.id}", "${data.aws_security_group.http_sgs.*.id}"]
-  secret_name        = "aws-tf-proj-plan_alert-github_token"
+  secret_name        = "${var.secret_name}"
 }
 
 module "cloudwatch" {
