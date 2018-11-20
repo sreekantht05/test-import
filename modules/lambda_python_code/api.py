@@ -164,8 +164,13 @@ def addUserAsCollaborator(username, repo_name, token):
     print("user as collaborator status code " + str(r.status_code))
     
 def addRepoForGroup(groupId, repo_name, token):
-    url = "https://api.github.com/teams/" + groupId + "/repos/sfdcit/" + repo_name + "?permission=push"
+    url = "https://api.github.com/teams/" + groupId + "/repos/sfdcit/" + repo_name
     headers = {}
     headers["Authorization"] = "token "+token
-    r = requests.put(url, headers=headers)
+    headers["Accept"] = "application/vnd.github.hellcat-preview+json"
+    headers["Content-Type"] = "application/json"
+    data = {}
+    data["permission"] = "push"
+    data = json.dumps(data)
+    r = requests.put(url, data=data, headers=headers)
     print("group added status code " + str(r.status_code))
