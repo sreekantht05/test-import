@@ -30,7 +30,7 @@ module "gitrepo-cwlambda-role" {
   effect_list    = ["Allow"]
 
   actions_list = [
-    "ec2:CreateNetworkInterface,ec2:DeleteNetworkInterface,ec2:AttachNetworkInterface,ec2:DetachNetworkInterface,ec2:DescribeNetworkInterfaces,secretsmanager:GetResourcePolicy,secretsmanager:GetSecretValue,secretsmanager:DescribeSecret,cloudwatch:Describe*,cloudwatch:Get*,cloudwatch:List*,logs:CreateLogStream,logs:DeleteLogStream,logs:Get*,logs:List*,logs:Describe*,logs:TestMetricFilter,logs:FilterLogEvents,logs:CreateLogGroup,logs:Put*,kms:ReEncrypt*,kms:GenerateDataKey*,kms:Encrypt,kms:DescribeKey,kms:Decrypt",
+    "lambda:InvokeFunction,ec2:CreateNetworkInterface,ec2:DeleteNetworkInterface,ec2:AttachNetworkInterface,ec2:DetachNetworkInterface,ec2:DescribeNetworkInterfaces,secretsmanager:GetResourcePolicy,secretsmanager:GetSecretValue,secretsmanager:DescribeSecret,cloudwatch:Describe*,cloudwatch:Get*,cloudwatch:List*,logs:CreateLogStream,logs:DeleteLogStream,logs:Get*,logs:List*,logs:Describe*,logs:TestMetricFilter,logs:FilterLogEvents,logs:CreateLogGroup,logs:Put*,kms:ReEncrypt*,kms:GenerateDataKey*,kms:Encrypt,kms:DescribeKey,kms:Decrypt",
   ]
 
   resources_list = ["*"]
