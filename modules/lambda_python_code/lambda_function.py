@@ -81,7 +81,7 @@ def lambda_handler(event, context):
             print (groupName + " added to the repository")
             
         for account in accounts:
-            f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", "envs/" + account + "/main.tf")  
+            f1.createNewFile(repo_name,token, "#Placeholder".encode('utf-8'), "master", "envs/" + account + "-or/"+ account +"-or-vars.tf") 
         
         r = f1.getMasterSHA(repo_name,token)
         response = json.loads(r.text)
