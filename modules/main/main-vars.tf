@@ -34,3 +34,11 @@ variable "secret_name" {
   type        = "string"
   description = "Secret name to retrieve the github token"
 }
+
+#--------------------------------------------
+# Infradev policy variables
+#--------------------------------------------
+variable "group_name" {
+  type        = "string"
+  description = "Infradev Group Name"
+}

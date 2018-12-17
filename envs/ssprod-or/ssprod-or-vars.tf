@@ -11,4 +11,5 @@ module "ssprod" {
 
   # lambda variables
   secret_name = "aws-tf-proj-plan_alert-github_token"
+  group_name  = "ssprod-fundn-group-infradev"
 }

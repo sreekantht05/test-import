@@ -102,3 +102,38 @@ module "cloudwatch" {
   regional_prefix = "${module.name-prefix.regional_prefix}"
   target_arn      = "${module.lambda.arn}"
 }
+
+data "aws_iam_policy_document" "gitrepolambda_invoke_doc" {
+  statement {
+    sid    = "InvokeLambda"
+    effect = "Allow"
+
+    resources = [
+      "${module.lambda.arn}",
+    ]
+
+    actions = [
+      "lambda:InvokeFunction",
+      "lambda:InvokeAsync",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "gitrepolambda_invoke" {
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  description = "Allow Lambda InvokeFunction access for ssprod-or-grepo-function-cwlambda function"
+  name        = "${module.name-prefix.regional_prefix}-policy-gitrepolambdainvoke"
+  policy      = "${data.aws_iam_policy_document.gitrepolambda_invoke_doc.json}"
+}
+
+data "aws_iam_group" "infradev" {
+  group_name = "${var.group_name}"
+}
+
+resource "aws_iam_group_policy_attachment" "infradev_group_attach" {
+  group      = "${data.aws_iam_group.infradev.group_name}"
+  policy_arn = "${aws_iam_policy.gitrepolambda_invoke.arn}"
+}
