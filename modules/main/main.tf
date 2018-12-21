@@ -137,3 +137,12 @@ resource "aws_iam_group_policy_attachment" "infradev_group_attach" {
   group      = "${data.aws_iam_group.infradev.group_name}"
   policy_arn = "${aws_iam_policy.gitrepolambda_invoke.arn}"
 }
+
+data "aws_iam_role" "infradev" {
+  name = "${var.role_name}"
+}
+
+resource "aws_iam_role_policy_attachment" "infradev_group_attach" {
+  role       = "${data.aws_iam_role.infradev.name}"
+  policy_arn = "${aws_iam_policy.gitrepolambda_invoke.arn}"
+}
