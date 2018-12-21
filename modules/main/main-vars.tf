@@ -42,3 +42,8 @@ variable "group_name" {
   type        = "string"
   description = "Infradev Group Name"
 }
+
+variable "role_name" {
+  type        = "string"
+  description = "Infradev Role Name"
+}
