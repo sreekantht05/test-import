@@ -26,7 +26,7 @@ This Module creates AWS resources which creates a GIT Repository along with some
 #### 3) Enter a list of space-separated BRANCHES where your code will be deployed. dev or ssdev is REQUIRED. i.e  dev ssdev uat qa prod ssprod :
        ex. dev prod
 #### 4) Enter a list of space separated GITHUB USERNAMES who will serve as code owners: 
-       ex. sherylla fcustodio sreekantht05
+       ex. sherylla sreekantht05 sfdcit/scrum:
 
       {'repo_name': 'aws-tf-proj-test5', 'environments': ['dev', 'prod'], 'code_owners': ['sherylla', 'fcustodio', 'sreekantht05']}
 
