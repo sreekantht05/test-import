@@ -99,6 +99,7 @@ def setProtection(repo_name,token,branch_name):
         }
     }
     r = requests.put(url, json=data, headers=headers)
+    print("Branch protection updation status code " + str(r.status_code))
     return r
 
 def checkRepoExists(repo_name,token):
