@@ -15,7 +15,7 @@ resource "aws_lambda_function" "lambda" {
   handler          = "${var.handler}.lambda_handler"
   source_code_hash = "${data.archive_file.gitrepo_cw.output_base64sha256}"
   runtime          = "${var.runtime}"
-  timeout          = 120
+  timeout          = 300
 
   vpc_config {
     subnet_ids         = ["${var.subnet_ids}"]
