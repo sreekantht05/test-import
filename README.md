@@ -9,7 +9,7 @@ This Module creates AWS resources which creates a GIT Repository along with some
 
 ## Module Limitations
 - The *lambda* needs vpc, subnets and security_groups created by *fundn* repository as well as *asset management* repository.
-- The *lambda* reuses the secret that already created in secretsmanager - "aws-tf-proj-plan_alert-github_token"
+- The *lambda* reuses the secret that already created in secretsmanager - "aws-tf-proj-plan_alert-github_token".
 - This modules creates only "Oregon" region specific directories under "envs" directory.(e.g. "envs/dev-or/dev-or-vars.tf"). For other regions user needs to create the directories.
 
  ## How to use It : Frontend
