@@ -5,16 +5,19 @@
 variable "technology" {
   type        = "string"
   description = "Technology name from Supportforce Technologies object"
+  default     = "Git Repository"
 }
 
 variable "technology_code" {
   type        = "string"
   description = "Technology-Code from Supportforce IT Applications object"
+  default     = "grepo"
 }
 
 variable "created_by" {
   type        = "string"
   description = "Location of the source code"
+  default     = "aws-tf-proj-grepo"
 }
 
 variable "default_region" {

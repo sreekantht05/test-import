@@ -134,7 +134,20 @@ def lambda_handler(event, context):
                         print("    branch protection status -",isbranchProtected)
                         if not isbranchProtected:
                             print("    Updating the Branch Protection...")
-                            f1.setProtection(repo_name,token, branch_name)
+                            r = f1.setProtection(repo_name,token, branch_name)
+                            if r.status_code != 200:
+                                print("Branch Protection failed...")
+                        print("    checking for isRepoBranchStausCheckEnabled ")
+                        status = f1.isRepoBranchStausCheckEnable(repo_name,branch_name,token)
+                        print("    isRepoBranchStausCheckEnabled returns -",status)
+                        if status == False:
+                            r = f1.setRepoBranchStausCheckEnable(repo_name,branch_name,token)
+                            if r.status_code == 200:
+                                print("Status check is now enabled...")
+                            elif r.status_code == 422:
+                                print("Status check already enabled response ...")
+                        else:
+                            print("Status check is already enabled...")
 
         return "Branch Protection Applied Successfully for the GitHub repos"
         #TODO: Ensure branch protection for existing repos
