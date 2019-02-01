@@ -175,3 +175,33 @@ def addRepoForGroup(groupId, repo_name, token):
     data = json.dumps(data)
     r = requests.put(url, data=data, headers=headers)
     print("group added status code " + str(r.status_code))
+    
+def setRepoBranchStausCheckEnable(repo_name,branch_name,token):
+    setProtection(repo_name,token,branch_name)
+    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/branches/" + branch_name + "/protection/required_status_checks/contexts"
+    headers = {}
+    headers["Authorization"] = "token "+token
+    headers["Content-Type"] = "application/json"
+    context_name = "AWS CodeBuild us-west-2 ("+repo_name+"-tfplan)"
+    data = [context_name]
+    data = json.dumps(data)
+    r = requests.post(url, data=data, headers=headers)
+    return r
+
+def isRepoBranchStausCheckEnable(repo_name,branch_name,token):
+    url = "https://api.github.com/repos/sfdcit/" + repo_name + "/branches/" + branch_name + "/protection/required_status_checks/contexts"
+    headers = {}
+    headers["Authorization"] = "token "+token
+    headers["Content-Type"] = "application/json"
+    context_name = "AWS CodeBuild us-west-2 ("+repo_name+"-tfplan)"
+
+    r = requests.get(url, headers=headers)
+    if r.status_code == 200:
+        response = json.loads(r.text)
+        print(response)
+        if len(response) >0:
+            if context_name in response:
+                return True
+        else:
+            return False
+    return False
