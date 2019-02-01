@@ -1,4 +1,4 @@
-module "ssprod" {
+module "ssprod-or" {
   source = "../../modules/main"
 
   # lambda variables

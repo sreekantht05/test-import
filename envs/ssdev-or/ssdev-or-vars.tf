@@ -1,4 +1,4 @@
-module "ssdev" {
+module "ssdev-or" {
   source = "../../modules/main"
 
   # lambda variables
