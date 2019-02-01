@@ -5,7 +5,7 @@ This Module creates AWS resources which creates a GIT Repository along with some
  - Master branch is removed, dev or ssdev is marked as default branch depending upon the requirement.
  - All the branches that are specified are branch protected and able to merge via pull requests.
  - Teams or owners that are specified  are added into the CODEOWNERS file.
- - This module also creates a cloudwatch rule which runs daily to check branch protection for all the repositories in "sfdcit" organisation
+ - This module also creates a cloudwatch rule which runs daily to check branch protection for all the repositories in "sfdcit" organisation.
 
 ## Module Limitations
 - The *lambda* needs vpc, subnets and security_groups created by *fundn* repository as well as *asset management* repository.
