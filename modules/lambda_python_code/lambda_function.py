@@ -137,17 +137,20 @@ def lambda_handler(event, context):
                             r = f1.setProtection(repo_name,token, branch_name)
                             if r.status_code != 200:
                                 print("Branch Protection failed...")
-                        print("    checking for isRepoBranchStausCheckEnabled ")
-                        status = f1.isRepoBranchStausCheckEnable(repo_name,branch_name,token)
-                        print("    isRepoBranchStausCheckEnabled returns -",status)
-                        if status == False:
-                            r = f1.setRepoBranchStausCheckEnable(repo_name,branch_name,token)
-                            if r.status_code == 200:
-                                print("Status check is now enabled...")
-                            elif r.status_code == 422:
-                                print("Status check already enabled response ...")
+                        if "aws-tf-proj" in repo_name:
+                            print("    checking for isRepoBranchStausCheckEnabled ")
+                            status = f1.isRepoBranchStausCheckEnable(repo_name,branch_name,token)
+                            print("    isRepoBranchStausCheckEnabled returns -",status)
+                            if status == False:
+                                r = f1.setRepoBranchStausCheckEnable(repo_name,branch_name,token)
+                                if r.status_code == 200:
+                                    print("Status check is now enabled...")
+                                elif r.status_code == 422:
+                                    print("Status check already enabled response ...")
+                            else:
+                                print("Status check is already enabled...")
                         else:
-                            print("Status check is already enabled...")
+                            print("Repository names doesnt matches the pattern aws-tf-proj*, so terraform status checks are not enabled.")
 
         return "Branch Protection Applied Successfully for the GitHub repos"
         #TODO: Ensure branch protection for existing repos
