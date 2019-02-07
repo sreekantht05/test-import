@@ -6,6 +6,7 @@ This Module creates AWS resources which creates a GIT Repository along with some
  - All the branches that are specified are branch protected and able to merge via pull requests.
  - Teams or owners that are specified  are added into the CODEOWNERS file.
  - This module also creates a cloudwatch rule which runs daily to check branch protection for all the repositories in "sfdcit" organisation.
+ - Staus checks are enabled for the terraform plan for branches to ensure that only successfull terraform plans are allowed to merge.
 
 ## Module Limitations
 - The *lambda* needs vpc, subnets and security_groups created by *fundn* repository as well as *asset management* repository.
@@ -13,7 +14,9 @@ This Module creates AWS resources which creates a GIT Repository along with some
 - This modules creates only "Oregon" region specific directories under "envs" directory.(e.g. "envs/dev-or/dev-or-vars.tf"). For other regions user needs to create the directories.
 
  ## How to use It : Frontend
- 
+#### Prerequisite
+  User need to login to "SSProd" AWS Account via "awslogin" script before running the "create_repo.py" script.
+  
  ### New GitHub Repository Creation
   Run [create_repo.py](https://github.com/sfdcit/aws-tools/tree/master/devtools) from your local machine to create new Github repository. To have the best user experience, Python 3 is preferred. To download and install Python 3, please download a stable version from https://www.python.org/downloads/.
 
