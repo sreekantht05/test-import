@@ -6,6 +6,6 @@ output "lambda-arn" {
   value = "${module.lambda.function_arn}"
 }
 
-output "cloudwatch-arn" {
-  value = "${module.cloudwatch.event_arn}"
-}
+# output "cloudwatch-arn" {
+#   value = "${module.cloudwatch.event_arn}"
+# }
