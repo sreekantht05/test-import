@@ -80,41 +80,41 @@ data "aws_security_group" "http_sgs" {
   }
 }
 
-# module "lambda" {
-#   source           = "git@github.com:sfdcit/aws-tf-lib.git//modules/compute/lambda/function/vpc-access?ref=v1.0.0"
-#   regional_prefix  = "${module.name-prefix.regional_prefix}"
-#   function_purpose = "cwlambda"
-#   function_source  = "../../modules/lambda_python_code"
-#   function_runtime = "python3.6"
-#   function_timeout = "300"
-#   key_arn          = ""
+module "lambda" {
+  source           = "git@github.com:sfdcit/aws-tf-lib.git//modules/compute/lambda/function/vpc-access?ref=v1.0.0"
+  regional_prefix  = "${module.name-prefix.regional_prefix}"
+  function_purpose = "cwlambda"
+  function_source  = "../../modules/lambda_python_code"
+  function_runtime = "python3.6"
+  function_timeout = "300"
+  key_arn          = ""
 
-#   function_subnet_ids = "${data.aws_subnet.private_subnets.*.id}"
-#   function_sg_ids     = ["${data.aws_security_group.admin_sgs.*.id}", "${data.aws_security_group.http_sgs.*.id}"]
+  function_subnet_ids = "${data.aws_subnet.private_subnets.*.id}"
+  function_sg_ids     = ["${data.aws_security_group.admin_sgs.*.id}", "${data.aws_security_group.http_sgs.*.id}"]
 
-#   function_handler = "lambda_function.lambda_handler"
-#   role_arn         = "${module.gitrepo-cwlambda-role.role_arn}"
+  function_handler = "lambda_function.lambda_handler"
+  role_arn         = "${module.gitrepo-cwlambda-role.role_arn}"
 
-#   function_trigger_principal = "events.amazonaws.com"
-#   function_trigger_arn       = "${module.cloudwatch.event_arn}"
+  function_trigger_principal = "events.amazonaws.com"
+  function_trigger_arn       = "${module.cloudwatch.event_arn}"
 
-#   environment_variables = {
-#     secret_name = "${var.secret_name}"
-#   }
+  environment_variables = {
+    secret_name = "${var.secret_name}"
+  }
 
-#   tags = "${module.tags.tagmap}"
-# }
+  tags = "${module.tags.tagmap}"
+}
 
-# module "cloudwatch" {
-#   source              = "git@github.com:sfdcit/aws-tf-lib.git//modules/monitoring/cw-event?ref=v1.0.0"
-#   regional_prefix     = "${module.name-prefix.regional_prefix}"
-#   name                = "cw-schedule"
-#   event_purpose       = "Cloud watch Scheduler to ensure the branch protection rules are intact for git repository"
-#   role_arn            = ""
-#   target_purpose      = "cw-schedule"
-#   target_arn          = "${module.lambda.function_arn}"
-#   schedule_expression = "rate(1 hour)"
-# }
+module "cloudwatch" {
+  source              = "git@github.com:sfdcit/aws-tf-lib.git//modules/monitoring/cw-event?ref=v1.0.0"
+  regional_prefix     = "${module.name-prefix.regional_prefix}"
+  name                = "cw-schedule"
+  event_purpose       = "Cloud watch Scheduler to ensure the branch protection rules are intact for git repository"
+  role_arn            = ""
+  target_purpose      = "cw-schedule"
+  target_arn          = "${module.lambda.function_arn}"
+  schedule_expression = "rate(1 hour)"
+}
 
 data "aws_iam_policy_document" "gitrepolambda_invoke_doc" {
   statement {
