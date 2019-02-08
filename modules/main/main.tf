@@ -105,16 +105,16 @@ module "lambda" {
   tags = "${module.tags.tagmap}"
 }
 
-module "cloudwatch" {
-  source              = "git@github.com:sfdcit/aws-tf-lib.git//modules/monitoring/cw-event?ref=v1.0.0"
-  regional_prefix     = "${module.name-prefix.regional_prefix}"
-  name                = "cw-schedule"
-  event_purpose       = "Cloud watch Scheduler to ensure the branch protection rules are intact for git repository"
-  role_arn            = ""
-  target_purpose      = "cw-schedule"
-  target_arn          = "${module.lambda.function_arn}"
-  schedule_expression = "rate(1 hour)"
-}
+# module "cloudwatch" {
+#   source              = "git@github.com:sfdcit/aws-tf-lib.git//modules/monitoring/cw-event?ref=v1.0.0"
+#   regional_prefix     = "${module.name-prefix.regional_prefix}"
+#   name                = "cw-schedule"
+#   event_purpose       = "Cloud watch Scheduler to ensure the branch protection rules are intact for git repository"
+#   role_arn            = ""
+#   target_purpose      = "cw-schedule"
+#   target_arn          = "${module.lambda.function_arn}"
+#   schedule_expression = "rate(1 hour)"
+# }
 
 data "aws_iam_policy_document" "gitrepolambda_invoke_doc" {
   statement {
