@@ -2,6 +2,7 @@ from botocore.vendored import requests
 import json
 import os
 import base64
+import hcl
 
 def createRepo(repo_name,token):
     print("Post call for creating a repository")
@@ -205,3 +206,25 @@ def isRepoBranchStausCheckEnable(repo_name,branch_name,token):
         else:
             return False
     return False
+
+def get_pipeline_file_content(token, repo_name, branch_name):
+    url = "https://api.github.com/repos/sfdcit/"+ repo_name +"/contents/envs/" + branch_name + "/" + branch_name + "-vars.tf?ref=" + branch_name
+    headers = {}
+    headers["Content-Type"]="application/json"
+    headers["Authorization"] = "token "+token
+    r = requests.get(url, headers=headers)
+    if r.status_code == 200:
+        response = json.loads(r.text)
+        content = response["content"]
+        content = base64.b64decode(content)
+        print(content)
+    return content
+
+def get_module_list(content):
+    try:
+        data = hcl.loads(content)
+        if "module" in data:
+            module = data["module"]
+            return module
+    except ValueError as e:
+        print(e)

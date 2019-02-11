@@ -6,9 +6,6 @@ import retrieve_credentials as cred
 
 def lambda_handler(event, context):
     #{"repo_name": "my_repo_name", "environments": ["sbx", "dev", "uat", "qa"], "code_owners": ["afraley", "fcustodio"]}
-    branch_list = ['dev','qa','uat','prod','ssdev','ssprod','dr','soxprod','soxdr','vdassbx','itsssbx','lenelbadge','resvsbx1']
-    #branch_list = os.environ['branch_list']
-    #branch_list = json.loads(branch_list)
     token = cred.get_secret()
     pageNumber = 1
     numberOfRepos = 100
@@ -114,6 +111,12 @@ def lambda_handler(event, context):
         return returnResponse
     else:
         print("event doesnt contains repo_name or environments or code_owners details...")
+        
+        pipeline_reponame = "aws-tf-pipeline"
+        pipeline_branchname = "ssprod"
+        file_content = f1.get_pipeline_file_content(token, pipeline_reponame, pipeline_branchname)
+        module_list = f1.get_module_list(file_content)
+        
         while numberOfRepos == 100:
             repos = f1.getAllRepos(token, str(pageNumber))
             repos = json.loads(repos.text)
@@ -126,10 +129,16 @@ def lambda_handler(event, context):
                 print("Repo Name - ",repo_name)
                 branches = f1.getAllBranches(repo_name,token)
                 branches = json.loads(branches.text)
+
+                #below are the list of branches in pipeline, for these branches - branch protection and status checks are enabled
+                pipeline_branch_list = []
+                if repo_name in module_list:
+                    pipeline_branch_list = module_list[repo_name]["environments"]
+                
                 for branch in branches:
                     branch_name = branch["name"]
                     print("    branch - ",branch_name)
-                    if branch_name in branch_list:
+                    if branch_name in pipeline_branch_list:
                         isbranchProtected = f1.checkBranchProtection(repo_name,branch_name,token)
                         print("    branch protection status -",isbranchProtected)
                         if not isbranchProtected:
