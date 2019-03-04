@@ -50,3 +50,8 @@ variable "role_name" {
   type        = "string"
   description = "Infradev Role Name"
 }
+
+variable "infraops_role_name" {
+  type        = "string"
+  description = "Infraops Role Name"
+}
