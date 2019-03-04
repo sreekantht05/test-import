@@ -11,6 +11,8 @@ def lambda_handler(event, context):
     numberOfRepos = 100
     dictGroupIdGroupName = {}
     listUserNames = []
+    git_url_domain = "https://github.com/"
+    organisation = "sfdcit/"
     
     if "repo_name" in event and "environments" in event and "code_owners" in event:
         repo_name = event["repo_name"]
@@ -28,14 +30,14 @@ def lambda_handler(event, context):
             else:
                 ownerFileContent = ownerFileContent + '@'+ user
             
-            if user.find("sfdcit/") < 0:
+            if user.find(organisation) < 0:
                 r = f1.checkMembershipInOrganisation(user,token)
                 if r.status_code == 204:
                     print(user , "is a member of sfdcit organisation")
                     listUserNames.append(user)
                 else:
                     return "User membership not found"
-            elif "sfdcit/" in user:
+            elif organisation in user:
                 teamId = f1.checkTeamExists(user,token)
                 if teamId != -1:
                     print(user, " team exists in the organisation")
@@ -105,9 +107,10 @@ def lambda_handler(event, context):
             print(r.json())
     
         returnResponse = {}
-        returnResponse["Repository_Name"] = "sfdcit/"+repo_name+".git"
+        returnResponse["Repository_Name"] = organisation + repo_name + ".git"
         returnResponse["Branches"] = accounts
         returnResponse["Code_Owners"] = users
+        returnResponse["Repository_url"] = git_url_domain + organisation + repo_name
         return returnResponse
     else:
         print("event doesnt contains repo_name or environments or code_owners details...")
